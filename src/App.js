@@ -1,24 +1,36 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState, useEffect} from'react'
+import Psychologist from './Components/psychologist'
+import Timearea from './Components/timearea'
+import Likearea from './Components/likearea'
+import Form from './Components/form'
 
 function App() {
+  const [psychologists, setPsy] = useState([]);
+   //only run once the first time this component is render
+   useEffect(()=>{
+    if(localStorage.getItem("PsychologistData")){
+      setPsy(JSON.parse(localStorage.getItem("PsychologistData")))
+    }
+   }, [])
+   //run every time psychologist state changes
+   useEffect(()=>{
+     localStorage.setItem("PsychologistData",JSON.stringify(psychologists))
+   }, [psychologists])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Form setPsy={setPsy} />
+    <ul>
+      {psychologists.map(function(psychologist){
+        return <Psychologist setPsy={setPsy} key={psychologist.id} id={psychologist.id} name={psychologist.name} expertise={psychologist.expertise} age={psychologist.age} />
+      })}
+      
+    </ul>
+    <Timearea />
+    <Likearea />
+    </>
+
   );
 }
 
